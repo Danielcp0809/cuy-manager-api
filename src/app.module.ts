@@ -5,6 +5,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { configValidationSchema } from './enviroments.validator';
 import { EnterprisesModule } from './modules/enterprises/enterprises.module';
+import { AuthModule } from './modules/auth/auth.module';
 import config from './config/config';
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import config from './config/config';
     }),
     SharedModule,
     EnterprisesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
