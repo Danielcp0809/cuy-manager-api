@@ -1,15 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
-import { Enterprises } from 'src/models/enterprises.entity';
+import { Enterprise } from 'src/models/enterprises.entity';
+import { AuthService } from 'src/modules/auth/services/auth.service';
 import { CreateEnterpriseDto } from 'src/validators/enterprises.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class EnterprisesService {
   constructor(
-    @InjectRepository(Enterprises)
-    private enterprisesRepository: Repository<Enterprises>,
+    @InjectRepository(Enterprise)
+    private enterprisesRepository: Repository<Enterprise>,
+    private authService: AuthService,
   ) {}
   async createEnterprises(body: CreateEnterpriseDto) {
     try {
@@ -20,7 +22,12 @@ export class EnterprisesService {
         throw new BadRequestException('Enterprise already exists');
       }
       const newEnterprise = this.enterprisesRepository.create(body);
-      return await this.enterprisesRepository.save(newEnterprise);
+      await this.enterprisesRepository.save(newEnterprise);
+      const { password } = await this.authService.createCredentials(
+        enterprise,
+        body.email,
+      );
+      return { enterprise: newEnterprise, password };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
