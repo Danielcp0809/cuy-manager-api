@@ -24,7 +24,7 @@ export class EnterprisesService {
       const newEnterprise = this.enterprisesRepository.create(body);
       await this.enterprisesRepository.save(newEnterprise);
       const { password } = await this.authService.createCredentials(
-        enterprise,
+        newEnterprise,
         body.email,
       );
       return { enterprise: newEnterprise, password };
