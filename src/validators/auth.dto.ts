@@ -1,0 +1,17 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class RefreshTokenDto {
+  @IsNotEmpty()
+  @IsString()
+  refresh_token: string;
+}
+
+export class CredentialsDto {
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+}
