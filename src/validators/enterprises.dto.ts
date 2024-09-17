@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateEnterpriseDto {
@@ -11,6 +17,11 @@ export class CreateEnterpriseDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'The address of the enterprise' })
   address: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'The email associated to enterprise' })
+  email: string;
 
   @IsString()
   @ApiProperty({ description: 'The phone of the enterprise' })
