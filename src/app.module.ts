@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { SharedModule } from './modules/shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { configValidationSchema } from './enviroments.validator';
+import { EnterprisesModule } from './modules/enterprises/enterprises.module';
 import config from './config/config';
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import config from './config/config';
       validationSchema: configValidationSchema,
     }),
     SharedModule,
+    EnterprisesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
