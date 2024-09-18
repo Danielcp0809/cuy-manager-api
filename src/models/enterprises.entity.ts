@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Credentials } from './credentials.entity';
-import { Cages } from './cages.entity';
+import { Cage } from './cages.entity';
 
 @Entity('Enterprises')
 export class Enterprise extends Audit {
@@ -32,6 +32,6 @@ export class Enterprise extends Audit {
   @OneToOne(() => Credentials, (credentials) => credentials.enterprise)
   credentials: Credentials;
 
-  @OneToMany(() => Cages, (cages) => cages.enterprise)
-  cages: Cages[];
+  @OneToMany(() => Cage, (cage) => cage.enterprise)
+  cages: Cage[];
 }

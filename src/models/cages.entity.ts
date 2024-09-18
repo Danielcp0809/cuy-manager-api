@@ -9,7 +9,7 @@ import {
 import { Enterprise } from './enterprises.entity';
 
 @Entity('Cages')
-export class Cages extends Audit {
+export class Cage extends Audit {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -17,7 +17,10 @@ export class Cages extends Audit {
   code: string;
 
   @Column({ type: 'int', nullable: false })
-  capacity: string;
+  capacity: number;
+
+  @Column({ type: 'uuid', nullable: false })
+  enterprise_id: string;
 
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.cages)
   @JoinColumn({ name: 'enterprise_id' })
