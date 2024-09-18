@@ -15,7 +15,7 @@ import { ConfigType } from '@nestjs/config';
       useFactory: (configService: ConfigType<typeof config>) => {
         return {
           secret: configService.jwt_secret,
-          signOptions: { expiresIn: '30s' },
+          signOptions: { expiresIn: '1d' },
         };
       },
     }),
