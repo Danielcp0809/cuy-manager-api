@@ -1,6 +1,13 @@
 import { Audit } from 'src/modules/shared/entities/audit.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Credentials } from './credentials.entity';
+import { Cages } from './cages.entity';
 
 @Entity('Enterprises')
 export class Enterprise extends Audit {
@@ -24,4 +31,7 @@ export class Enterprise extends Audit {
 
   @OneToOne(() => Credentials, (credentials) => credentials.enterprise)
   credentials: Credentials;
+
+  @OneToMany(() => Cages, (cages) => cages.enterprise)
+  cages: Cages[];
 }

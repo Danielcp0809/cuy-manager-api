@@ -15,7 +15,7 @@ export class Credentials extends Audit {
   @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
   username: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 255, nullable: false })
   password: string;
 
   @Column({ type: 'tinyint', width: 1, default: () => '1' })
