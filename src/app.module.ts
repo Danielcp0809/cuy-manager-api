@@ -7,6 +7,7 @@ import { configValidationSchema } from './enviroments.validator';
 import { EnterprisesModule } from './modules/enterprises/enterprises.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CagesModule } from './modules/cages/cages.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import config from './config/config';
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import config from './config/config';
     EnterprisesModule,
     AuthModule,
     CagesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
