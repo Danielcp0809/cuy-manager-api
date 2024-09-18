@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Credentials } from './credentials.entity';
 import { Cage } from './cages.entity';
+import { Category } from './categories.entity';
 
 @Entity('Enterprises')
 export class Enterprise extends Audit {
@@ -34,4 +35,7 @@ export class Enterprise extends Audit {
 
   @OneToMany(() => Cage, (cage) => cage.enterprise)
   cages: Cage[];
+
+  @OneToMany(() => Category, (category) => category.enterprise)
+  categories: Category[];
 }
