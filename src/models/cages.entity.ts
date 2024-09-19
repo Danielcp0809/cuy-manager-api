@@ -4,9 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Enterprise } from './enterprises.entity';
+import { Counter } from './counters.entity';
 
 @Entity('Cages')
 export class Cage extends Audit {
@@ -25,4 +27,7 @@ export class Cage extends Audit {
   @ManyToOne(() => Enterprise, (enterprise) => enterprise.cages)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
+
+  @OneToMany(() => Counter, (counter) => counter.cage)
+  counters: Counter[];
 }
