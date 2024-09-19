@@ -51,6 +51,7 @@ export class CagesService {
       return await this.cagesRepository.find({
         where: { enterprise_id: req.user.enterprise_id },
         order: { code: 'ASC' },
+        relations: ['counters'],
       });
     } catch (error) {
       throw new BadRequestException(error.message);
