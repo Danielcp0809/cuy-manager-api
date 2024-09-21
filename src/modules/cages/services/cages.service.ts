@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { Cage } from 'src/models/cages.entity';
@@ -20,13 +25,16 @@ export class CagesService {
         enterprise_id: req.user.enterprise_id,
       });
       if (cage) {
-        throw new BadRequestException('Cage already exists');
+        throw new ConflictException('Cage already exists');
       }
       const newCage = this.cagesRepository.create(body);
       newCage.enterprise_id = req.user.enterprise_id;
       await this.cagesRepository.save(newCage);
       return newCage;
     } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
       throw new BadRequestException(error.message);
     }
   }
@@ -38,10 +46,13 @@ export class CagesService {
         id,
         enterprise_id: req.user.enterprise_id,
       });
-      if (!cage) throw new BadRequestException('Cage not found');
+      if (!cage) throw new NotFoundException('Cage not found');
       this.cagesRepository.merge(cage, body);
       return await this.cagesRepository.save(cage);
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       throw new BadRequestException(error.message);
     }
   }
