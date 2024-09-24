@@ -49,4 +49,11 @@ export class CagesController {
   getAllCages(@Req() request: IRequest) {
     return this.cagesService.getAllCages(request);
   }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get a cage by id' })
+  getCageById(@Param('id') id: string) {
+    return this.cagesService.getCageById(id);
+  }
 }

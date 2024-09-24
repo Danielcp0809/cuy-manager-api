@@ -68,4 +68,24 @@ export class CagesService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async getCageById(id: string) {
+    try {
+      if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
+      const cage = await this.cagesRepository.findOne({
+        where: { id },
+        relations: ['counters'],
+      });
+      if (!cage) throw new NotFoundException('Cage not found');
+      return cage;
+    } catch (error) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
 }
