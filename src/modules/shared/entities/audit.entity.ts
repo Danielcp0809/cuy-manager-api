@@ -7,10 +7,10 @@ import {
 
 export class Audit extends BaseEntity {
   @Column()
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: number;
 
   @Column()
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: number;
 }
