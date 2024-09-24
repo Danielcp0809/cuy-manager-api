@@ -58,7 +58,7 @@ export class AuthService {
   async refreshToken(body: RefreshTokenDto) {
     try {
       const payload = this.jwtService.verify(body.refresh_token);
-      const credentials = await this.getSchoolCredentials(payload.username);
+      const credentials = await this.getEnterpriseCredentials(payload.username);
       if (!credentials) {
         throw new UnauthorizedException('Invalid credentials');
       }
@@ -73,7 +73,7 @@ export class AuthService {
     }
   }
 
-  async getSchoolCredentials(username: string) {
+  async getEnterpriseCredentials(username: string) {
     const credentials = await this.credentialsRepository.findOne({
       where: { username },
       relations: ['enterprise'],
@@ -86,7 +86,7 @@ export class AuthService {
 
   async signIn(username: string, password: string) {
     try {
-      const credentials = await this.getSchoolCredentials(username);
+      const credentials = await this.getEnterpriseCredentials(username);
       const isValid = await this.validationPassword(
         password,
         credentials.password,
@@ -94,7 +94,11 @@ export class AuthService {
       if (!isValid) {
         throw new UnauthorizedException('Invalid credentials');
       }
-      return this.generateToken(credentials);
+      const tokens = await this.generateToken(credentials);
+      return {
+        enterprise: credentials.enterprise,
+        ...tokens,
+      };
     } catch (error) {
       throw new UnauthorizedException(error.message);
     }
