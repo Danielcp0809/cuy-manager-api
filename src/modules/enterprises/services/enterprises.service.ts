@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { Enterprise } from 'src/models/enterprises.entity';
@@ -42,6 +46,17 @@ export class EnterprisesService {
       return await this.enterprisesRepository.save(enterprise);
     } catch (error) {
       throw new BadRequestException(error.message);
+    }
+  }
+
+  async getEnterpriseById(id: string) {
+    try {
+      if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
+      const enterprise = await this.enterprisesRepository.findOneBy({ id });
+      if (!enterprise) throw new NotFoundException('Enterprise not found');
+      return enterprise;
+    } catch (error) {
+      throw new NotFoundException(error.message);
     }
   }
 }
