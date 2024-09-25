@@ -57,7 +57,7 @@ export class CountersService {
           cage_id: body.cage_id ?? counter.cage_id,
         },
       });
-      if (newCounter)
+      if (newCounter && newCounter.id !== counter.id)
         throw new ConflictException(
           'A counter with the specified category already exists for this cage',
         );
