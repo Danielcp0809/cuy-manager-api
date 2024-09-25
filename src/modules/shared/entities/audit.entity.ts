@@ -1,16 +1,21 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BaseEntity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
 
 export class Audit extends BaseEntity {
-  @Column()
-  @CreateDateColumn({ type: 'timestamp' })
+  @Column({ type: 'bigint' })
   created_at: number;
 
-  @Column()
-  @UpdateDateColumn({ type: 'timestamp' })
+  @Column({ type: 'bigint' })
   updated_at: number;
+
+  @BeforeInsert()
+  setTimestamps() {
+    const epoch = Date.now();
+    this.created_at = epoch;
+    this.updated_at = epoch;
+  }
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updated_at = Date.now();
+  }
 }
