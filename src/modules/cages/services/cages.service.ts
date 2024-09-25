@@ -74,7 +74,7 @@ export class CagesService {
       if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
       const cage = await this.cagesRepository.findOne({
         where: { id },
-        relations: ['counters'],
+        relations: ['counters', 'counters.category'],
       });
       if (!cage) throw new NotFoundException('Cage not found');
       return cage;
