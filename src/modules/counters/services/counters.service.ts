@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { Counter } from 'src/models/counters.entity';
@@ -21,7 +26,7 @@ export class CountersService {
         where: { category_id: body.category_id, cage_id: body.cage_id },
       });
       if (counter)
-        throw new BadRequestException(
+        throw new ConflictException(
           'A counter with the specified category already exists for this cage',
         );
       const newCounter = this.countersRepository.create(body);
@@ -33,6 +38,9 @@ export class CountersService {
           'Error creating counter. Category or cage not exist.',
         );
       }
+      if (error instanceof ConflictException) {
+        throw error;
+      }
       throw new BadRequestException(error.message);
     }
   }
@@ -41,10 +49,29 @@ export class CountersService {
     try {
       if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
       const counter = await this.countersRepository.findOne({ where: { id } });
-      if (!counter) throw new BadRequestException('Counter not found');
+      if (!counter) throw new NotFoundException('Counter not found');
+
+      const newCounter = await this.countersRepository.findOne({
+        where: {
+          category_id: body.category_id ?? counter.category_id,
+          cage_id: body.cage_id ?? counter.cage_id,
+        },
+      });
+      if (newCounter)
+        throw new ConflictException(
+          'A counter with the specified category already exists for this cage',
+        );
       this.countersRepository.merge(counter, body);
       return await this.countersRepository.save(counter);
     } catch (error) {
+      if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+        throw new BadRequestException(
+          'Error updating counter. Category or cage not exist.',
+        );
+      }
+      if (error instanceof ConflictException) {
+        throw error;
+      }
       throw new BadRequestException(error.message);
     }
   }
