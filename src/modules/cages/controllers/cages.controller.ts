@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -55,5 +56,12 @@ export class CagesController {
   @ApiOperation({ summary: 'Get a cage by id' })
   getCageById(@Param('id') id: string) {
     return this.cagesService.getCageById(id);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a cage by id' })
+  deleteCage(@Param('id') id: string) {
+    return this.cagesService.deleteCage(id);
   }
 }

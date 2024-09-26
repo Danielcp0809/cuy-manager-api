@@ -79,10 +79,23 @@ export class CagesService {
       if (!cage) throw new NotFoundException('Cage not found');
       return cage;
     } catch (error) {
-      if (
-        error instanceof BadRequestException ||
-        error instanceof NotFoundException
-      ) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteCage(id: string) {
+    try {
+      if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
+      const cage = await this.cagesRepository.findOne({
+        where: { id },
+      });
+      if (!cage) throw new NotFoundException('Cage not found');
+      await this.cagesRepository.delete(id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
         throw error;
       }
       throw new BadRequestException(error.message);
