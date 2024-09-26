@@ -23,11 +23,13 @@ export class Counter extends Audit {
   @Column({ type: 'int', nullable: false })
   amount: number;
 
-  @ManyToOne(() => Cage, (cage) => cage.counters)
+  @ManyToOne(() => Cage, (cage) => cage.counters, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'cage_id' })
   cage: Cage;
 
-  @ManyToOne(() => Category, (category) => category.counters)
+  @ManyToOne(() => Category, (category) => category.counters, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 }

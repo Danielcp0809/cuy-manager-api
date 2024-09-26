@@ -30,12 +30,21 @@ export class Enterprise extends Audit {
   @Column({ type: 'boolean', default: true })
   is_enabled: boolean;
 
-  @OneToOne(() => Credentials, (credentials) => credentials.enterprise)
+  @OneToOne(() => Credentials, (credentials) => credentials.enterprise, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   credentials: Credentials;
 
-  @OneToMany(() => Cage, (cage) => cage.enterprise)
+  @OneToMany(() => Cage, (cage) => cage.enterprise, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   cages: Cage[];
 
-  @OneToMany(() => Category, (category) => category.enterprise)
+  @OneToMany(() => Category, (category) => category.enterprise, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   categories: Category[];
 }

@@ -24,10 +24,15 @@ export class Cage extends Audit {
   @Column({ type: 'uuid', nullable: false })
   enterprise_id: string;
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.cages)
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.cages, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
 
-  @OneToMany(() => Counter, (counter) => counter.cage)
+  @OneToMany(() => Counter, (counter) => counter.cage, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   counters: Counter[];
 }

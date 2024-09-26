@@ -27,10 +27,15 @@ export class Category extends Audit {
   @Column({ type: 'uuid', nullable: false })
   enterprise_id: string;
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories)
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.categories, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
 
-  @OneToMany(() => Counter, (counter) => counter.cage)
+  @OneToMany(() => Counter, (counter) => counter.cage, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   counters: Counter[];
 }
