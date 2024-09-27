@@ -18,6 +18,9 @@ export class Category extends Audit {
   @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
   name: string;
 
+  @Column({ type: 'varchar', length: 10, nullable: false, default: '#000000' })
+  color: string;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 

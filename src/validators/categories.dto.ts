@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsHexColor, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsNotEmpty()
@@ -8,6 +8,10 @@ export class CreateCategoryDto {
 
   @IsString()
   description: string;
+
+  @IsHexColor()
+  @IsNotEmpty()
+  color: string;
 
   @IsNotEmpty()
   price: number;
