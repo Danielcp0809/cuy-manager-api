@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { Category } from 'src/models/categories.entity';
@@ -56,6 +60,23 @@ export class CategoriesService {
         order: { name: 'ASC' },
       });
     } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteCategory(id: string) {
+    try {
+      if (!isUUID(id)) throw new BadRequestException('Invalid UUID');
+      const category = await this.categoriesRepository.findOneBy({
+        id,
+      });
+      if (!category) throw new NotFoundException('Category not found');
+      await this.categoriesRepository.delete({ id });
+      return category;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new BadRequestException(error.message);
     }
   }

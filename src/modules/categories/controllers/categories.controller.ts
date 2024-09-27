@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -50,5 +51,12 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Get all categories' })
   getAllCategories(@Req() request: IRequest) {
     return this.categoriesService.getAllCategories(request);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a category by id' })
+  deleteCategory(@Param('id') id: string) {
+    return this.categoriesService.deleteCategory(id);
   }
 }
