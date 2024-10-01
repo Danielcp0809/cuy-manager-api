@@ -1,7 +1,6 @@
 import Joi = require('joi');
 
 export const configValidationSchema = Joi.object({
-  WEB_APP_URL: Joi.string().required(),
   API_KEY: Joi.string().required(),
   DB_HOST: Joi.string().required(),
   DB_PORT: Joi.number().required(),
