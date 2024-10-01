@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CagesModule } from './modules/cages/cages.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { CountersModule } from './modules/counters/counters.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import config from './config/config';
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import config from './config/config';
     CagesModule,
     CategoriesModule,
     CountersModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
