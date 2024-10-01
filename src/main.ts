@@ -1,7 +1,10 @@
+import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,8 +30,10 @@ async function bootstrap() {
     }),
   );
 
+  const webAppUrl = process.env.WEB_APP_URL || 'http://localhost:3000';
+
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', webAppUrl],
     credentials: true,
   });
   await app.listen(process.env.APP_PORT || 3030);
