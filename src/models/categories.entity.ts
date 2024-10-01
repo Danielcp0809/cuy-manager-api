@@ -36,7 +36,7 @@ export class Category extends Audit {
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
 
-  @OneToMany(() => Counter, (counter) => counter.cage, {
+  @OneToMany(() => Counter, (counter) => counter.category, {
     cascade: true,
     onDelete: 'CASCADE',
   })
