@@ -24,7 +24,7 @@
     "migration:revert": "npm run typeorm -- -d ./src/config/typeorm.ts migration:revert",
     "migration:show": "npm run typeorm -- migration:show -d ./src/config/typeorm.ts",
     "migration:drop": "npm run typeorm -- -d ./src/config/typeorm.ts schema:drop",
-    "start:prod:migrate": "npm run migration:run && npm run start:prod"
+    "start:prod:migrate": "npm run migration:generate --name=production_deployment && npm run migration:run && npm run start:prod"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
