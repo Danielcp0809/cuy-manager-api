@@ -21,6 +21,12 @@ export class Credentials extends Audit {
   @Column({ type: 'tinyint', width: 1, default: () => '1' })
   reset_password: boolean;
 
+  @Column({ type: 'varchar', nullable: true })
+  reset_password_code: string;
+
+  @Column({ type: 'bigint' })
+  reset_password_date: number;
+
   @OneToOne(() => Enterprise, (enterprise) => enterprise.credentials)
   @JoinColumn({ name: 'enterprise_id' })
   enterprise: Enterprise;
