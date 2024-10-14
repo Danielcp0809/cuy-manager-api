@@ -6,6 +6,7 @@ import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import config from 'src/config/config';
 import { ConfigType } from '@nestjs/config';
+import { SharedModule } from '../shared/shared.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigType } from '@nestjs/config';
         };
       },
     }),
+    SharedModule,
   ],
   providers: [AuthService],
   exports: [AuthService, JwtModule],

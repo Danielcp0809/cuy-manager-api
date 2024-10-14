@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailService } from './services/email.service';
 import typeorm from 'src/config/typeorm';
 
 @Module({
@@ -14,7 +15,7 @@ import typeorm from 'src/config/typeorm';
         configService.get('typeorm'),
     }),
   ],
-  providers: [],
-  exports: [TypeOrmModule],
+  providers: [EmailService],
+  exports: [TypeOrmModule, EmailService],
 })
 export class SharedModule {}
