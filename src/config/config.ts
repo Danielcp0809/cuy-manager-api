@@ -7,4 +7,5 @@ export default registerAs('config', () => ({
   environment: process.env.NODE_ENV || 'dev',
   apiKey: process.env.API_KEY,
   jwt_secret: process.env.JWT_SECRET,
+  mailtrap_token: process.env.MAILTRAP_TOKEN,
 }));
