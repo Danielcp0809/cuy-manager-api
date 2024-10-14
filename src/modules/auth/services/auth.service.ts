@@ -1,6 +1,8 @@
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +12,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { RefreshTokenDto } from 'src/validators/auth.dto';
+import { EmailService } from 'src/modules/shared/services/email.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +20,7 @@ export class AuthService {
     @InjectRepository(Credentials)
     private credentialsRepository: Repository<Credentials>,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async createCredentials(enterprise: Enterprise, email: string) {
@@ -101,6 +105,61 @@ export class AuthService {
       };
     } catch (error) {
       throw new UnauthorizedException(error.message);
+    }
+  }
+
+  async generateRecoveryPasswordCode(credentials: Credentials) {
+    // generate 4 digits code randomly
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    // generate a date in milliseconds
+    const date = new Date().getTime();
+    credentials.reset_password_code = code;
+    credentials.reset_password_date = date;
+    await this.credentialsRepository.save(credentials);
+    // send email
+    this.emailService.sendRecoveryPasswordEmail(
+      code,
+      credentials.enterprise.email,
+      credentials.enterprise.name,
+    );
+  }
+
+  async forgotPassword(email: string) {
+    try {
+      const credentials = await this.credentialsRepository.findOne({
+        where: { username: email },
+        relations: ['enterprise'],
+      });
+      if (!credentials) {
+        throw new NotFoundException('Enterprise not found');
+      }
+      // compare if the last reset password is less than 5 minutes
+      if (
+        credentials.reset_password_date &&
+        new Date().getTime() - credentials.reset_password_date < 300000
+      ) {
+        // return the remainder time in milliseconds
+        const remainderTime =
+          300000 - (new Date().getTime() - credentials.reset_password_date);
+        throw new ForbiddenException(
+          JSON.stringify({
+            message: "You can't generate a new code yet",
+            remainderTime,
+          }),
+        );
+      }
+      await this.generateRecoveryPasswordCode(credentials);
+      return {
+        message: `Recovery password code sent to your email ${credentials.enterprise.email}`,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      } else if (error instanceof ForbiddenException) {
+        throw new ForbiddenException(error.message);
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 }

@@ -16,4 +16,10 @@ export class AuthController {
   refreshToken(@Body() body: RefreshTokenDto) {
     return this.authService.refreshToken(body);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/forgot-password')
+  forgotPassword(@Body() body: { email: string }) {
+    return this.authService.forgotPassword(body.email);
+  }
 }
