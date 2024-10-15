@@ -8,10 +8,11 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { DashboardService } from '../services/dashboard.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('Dashboard')
 @Controller('dashboard')
 export class DashboardController {
   constructor(private dashboardService: DashboardService) {}

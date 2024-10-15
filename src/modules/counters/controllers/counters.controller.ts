@@ -16,10 +16,11 @@ import {
   CreateCounterDto,
   UpdateCounterDto,
 } from 'src/validators/counters.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ValidatePayloadExistsPipe } from 'src/pipes/payload-exists/payload-exists.pipe';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('Counters')
 @Controller('counters')
 export class CountersController {
   constructor(private countersService: CountersService) {}

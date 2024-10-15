@@ -12,7 +12,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import {
@@ -23,6 +23,7 @@ import { CategoriesService } from '../services/categories.service';
 import { ValidatePayloadExistsPipe } from 'src/pipes/payload-exists/payload-exists.pipe';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
