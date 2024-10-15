@@ -140,13 +140,13 @@ export class AuthService {
         new Date().getTime() - credentials.reset_password_date < 300000
       ) {
         // return the remainder time in milliseconds
-        const remainderTime =
+        const remainingTime =
           300000 - (new Date().getTime() - credentials.reset_password_date);
         throw new ForbiddenException(
           JSON.stringify({
             message:
               'The code has been sent, please wait 5 minutes to request a new one',
-            remainderTime,
+            remainingTime,
           }),
         );
       }
