@@ -15,3 +15,33 @@ export class CredentialsDto {
   @IsString()
   password: string;
 }
+
+export class ForgotPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+}
+
+export class VerifyCodeDto {
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  code: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  code: string;
+
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+}
