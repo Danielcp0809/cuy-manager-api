@@ -34,6 +34,7 @@ export class Cage extends Audit {
   @OneToMany(() => Counter, (counter) => counter.cage, {
     cascade: true,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   counters: Counter[];
 
