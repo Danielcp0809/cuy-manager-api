@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Enterprise } from './enterprises.entity';
 import { Counter } from './counters.entity';
+import { Breeding } from './breedings.entity';
 
 @Entity('Cages')
 export class Cage extends Audit {
@@ -35,4 +36,10 @@ export class Cage extends Audit {
     onDelete: 'CASCADE',
   })
   counters: Counter[];
+
+  @OneToMany(() => Breeding, (breeding) => breeding.cage, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  breedings: Breeding[];
 }
