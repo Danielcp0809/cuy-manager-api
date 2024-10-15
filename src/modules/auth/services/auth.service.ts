@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +13,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { RefreshTokenDto } from 'src/validators/auth.dto';
+import { EmailService } from 'src/modules/shared/services/email.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +21,7 @@ export class AuthService {
     @InjectRepository(Credentials)
     private credentialsRepository: Repository<Credentials>,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async createCredentials(enterprise: Enterprise, email: string) {
