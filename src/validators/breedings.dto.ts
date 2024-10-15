@@ -43,6 +43,7 @@ export class CreateBreedingDto {
   @IsBoolean()
   continuous_breeding: boolean;
 
+  @IsNotEmpty()
   @IsString()
   description: string;
 }
