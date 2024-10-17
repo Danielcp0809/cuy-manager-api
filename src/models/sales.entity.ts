@@ -32,6 +32,9 @@ export class Sale extends Audit {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   unit_weight: number;
 
+  @Column({ type: 'bigint' })
+  date: number;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;

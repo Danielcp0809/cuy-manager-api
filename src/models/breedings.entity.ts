@@ -54,6 +54,9 @@ export class Breeding extends Audit {
   @JoinColumn({ name: 'male_cage_id' })
   male_cage: Cage;
 
+  @Column({ type: 'bigint' })
+  date: number;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'male_category_id' })
   male_category: Category;
