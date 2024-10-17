@@ -18,6 +18,9 @@ export class Sale extends Audit {
   category_id: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
+  enterprise_id: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: false })
   cage_id: string;
 
   @Column({ type: 'int', nullable: false })
