@@ -44,7 +44,9 @@ export class Breeding extends Audit {
   @Column({ type: 'varchar', length: 100, nullable: false })
   enterprise_id: string;
 
-  @ManyToOne(() => Cage, (cage) => cage.breedings)
+  @ManyToOne(() => Cage, (cage) => cage.breedings, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'cage_id' })
   cage: Cage;
 
