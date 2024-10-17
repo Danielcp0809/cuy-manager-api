@@ -1,12 +1,19 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Breeding } from 'src/models/breedings.entity';
 import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
 import { Purchase } from 'src/models/purchases.entity';
+import { Sale } from 'src/models/sales.entity';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreateBreedingDto } from 'src/validators/breedings.dto';
 import { CreatePurchaseDto } from 'src/validators/purchases.dto';
+import { CreateSaleDto } from 'src/validators/sales.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -20,6 +27,8 @@ export class EventsService {
     private counterRepository: Repository<Counter>,
     @InjectRepository(Purchase)
     private purchaseRepository: Repository<Purchase>,
+    @InjectRepository(Sale)
+    private saleRepository: Repository<Sale>,
   ) {}
 
   async createBreedingEvent(body: CreateBreedingDto, req: IRequest) {
@@ -135,6 +144,34 @@ export class EventsService {
       newPurchase.enterprise_id = req.user.enterprise_id;
       await this.purchaseRepository.save(newPurchase);
       return newPurchase;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async createSaleEvent(body: CreateSaleDto, req: IRequest) {
+    // Update cage counters
+    const cage = await this.cageRepository.findOne({
+      where: { id: body.cage_id },
+      relations: ['counters'],
+    });
+    if (!cage) throw new NotFoundException('Cage not found');
+    const cageCounter = cage.counters.find(
+      (counter) => counter.category_id === body.category_id,
+    );
+    if (!cageCounter) throw new NotFoundException('Counter not found');
+
+    if (cageCounter.amount < body.quantity)
+      throw new BadRequestException('Not enough animals in the cage');
+
+    try {
+      cageCounter.amount -= body.quantity;
+      await this.cageRepository.save(cage);
+      // create sale event
+      const newSale = this.saleRepository.create(body);
+      newSale.enterprise_id = req.user.enterprise_id;
+      await this.saleRepository.save(newSale);
+      return newSale;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

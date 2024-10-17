@@ -7,10 +7,11 @@ import { AuthModule } from '../auth/auth.module';
 import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
 import { Purchase } from 'src/models/purchases.entity';
+import { Sale } from 'src/models/sales.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Breeding, Purchase, Cage, Counter]),
+    TypeOrmModule.forFeature([Breeding, Purchase, Sale, Cage, Counter]),
     AuthModule,
   ],
   controllers: [EventsController],
