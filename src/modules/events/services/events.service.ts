@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Breeding } from 'src/models/breedings.entity';
 import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
+import { Purchase } from 'src/models/purchases.entity';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreateBreedingDto } from 'src/validators/breedings.dto';
+import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,6 +18,8 @@ export class EventsService {
     private cageRepository: Repository<Cage>,
     @InjectRepository(Counter)
     private counterRepository: Repository<Counter>,
+    @InjectRepository(Purchase)
+    private purchaseRepository: Repository<Purchase>,
   ) {}
 
   async createBreedingEvent(body: CreateBreedingDto, req: IRequest) {
@@ -94,6 +98,41 @@ export class EventsService {
       newBreeding.enterprise_id = req.user.enterprise_id;
       await this.breedingRepository.save(newBreeding);
       return newBreeding;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async createPurchaseEvent(body: CreatePurchaseDto, req: IRequest) {
+    // Update cage counters
+    const cage = await this.cageRepository.findOne({
+      where: { id: body.cage_id },
+      relations: ['counters'],
+    });
+    if (!cage) {
+      throw new InternalServerErrorException('Cage not found');
+    }
+
+    try {
+      const cageCounter = cage.counters.find(
+        (counter) => counter.category_id === body.category_id,
+      );
+      if (!cageCounter) {
+        // create counter
+        await this.counterRepository.save({
+          cage_id: body.cage_id,
+          category_id: body.category_id,
+          amount: body.quantity,
+        });
+      } else {
+        cageCounter.amount += body.quantity;
+        await this.cageRepository.save(cage);
+      }
+      // create purchase event
+      const newPurchase = this.purchaseRepository.create(body);
+      newPurchase.enterprise_id = req.user.enterprise_id;
+      await this.purchaseRepository.save(newPurchase);
+      return newPurchase;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

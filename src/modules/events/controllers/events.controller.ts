@@ -12,6 +12,7 @@ import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { EventsService } from '../services/events.service';
 import { CreateBreedingDto } from 'src/validators/breedings.dto';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
+import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Events')
@@ -27,5 +28,15 @@ export class EventsController {
     @Req() request: IRequest,
   ) {
     return this.eventsService.createBreedingEvent(body, request);
+  }
+
+  @Post('/purchase')
+  @ApiOperation({ summary: 'Create a new purchase event' })
+  @HttpCode(HttpStatus.CREATED)
+  createPurchaseEvent(
+    @Body() body: CreatePurchaseDto,
+    @Req() request: IRequest,
+  ) {
+    return this.eventsService.createPurchaseEvent(body, request);
   }
 }
