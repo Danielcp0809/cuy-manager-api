@@ -10,6 +10,7 @@ import {
 import { Enterprise } from './enterprises.entity';
 import { Counter } from './counters.entity';
 import { Breeding } from './breedings.entity';
+import { Purchase } from './purchases.entity';
 
 @Entity('Cages')
 export class Cage extends Audit {
@@ -43,4 +44,7 @@ export class Cage extends Audit {
     onDelete: 'CASCADE',
   })
   breedings: Breeding[];
+
+  @OneToMany(() => Purchase, (purchase) => purchase.cage)
+  purchases: Purchase[];
 }

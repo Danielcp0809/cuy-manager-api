@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Enterprise } from './enterprises.entity';
 import { Counter } from './counters.entity';
-
 @Entity('Categories')
 export class Category extends Audit {
   @PrimaryGeneratedColumn('uuid')
