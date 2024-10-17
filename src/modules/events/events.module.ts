@@ -6,9 +6,13 @@ import { Breeding } from 'src/models/breedings.entity';
 import { AuthModule } from '../auth/auth.module';
 import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
+import { Purchase } from 'src/models/purchases.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Breeding, Cage, Counter]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Breeding, Purchase, Cage, Counter]),
+    AuthModule,
+  ],
   controllers: [EventsController],
   providers: [EventsService],
 })
