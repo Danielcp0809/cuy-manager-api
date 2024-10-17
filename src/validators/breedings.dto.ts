@@ -46,4 +46,8 @@ export class CreateBreedingDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  date: number;
 }

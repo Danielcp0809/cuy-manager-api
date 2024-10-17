@@ -40,4 +40,11 @@ export class CreateSaleDto {
   @IsString()
   @ApiProperty({ description: 'Additional details or notes about the sale' })
   description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    description: 'The date when the sale was made in epoch format',
+  })
+  date: number;
 }

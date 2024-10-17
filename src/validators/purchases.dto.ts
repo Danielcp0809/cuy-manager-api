@@ -39,4 +39,11 @@ export class CreatePurchaseDto {
     description: 'Additional details or notes about the purchase',
   })
   description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    description: 'The date when the purchase was made in epoch format',
+  })
+  date: number;
 }

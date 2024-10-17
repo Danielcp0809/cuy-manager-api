@@ -104,6 +104,7 @@ export class EventsService {
       }
 
       // Create breeding event
+      if (!body.date || body.date === 0) body.date = Date.now();
       const newBreeding = this.breedingRepository.create(body);
       newBreeding.enterprise_id = req.user.enterprise_id;
       await this.breedingRepository.save(newBreeding);
@@ -140,6 +141,7 @@ export class EventsService {
         await this.cageRepository.save(cage);
       }
       // create purchase event
+      if (!body.date || body.date === 0) body.date = Date.now();
       const newPurchase = this.purchaseRepository.create(body);
       newPurchase.enterprise_id = req.user.enterprise_id;
       await this.purchaseRepository.save(newPurchase);
@@ -168,6 +170,7 @@ export class EventsService {
       cageCounter.amount -= body.quantity;
       await this.cageRepository.save(cage);
       // create sale event
+      if (!body.date || body.date === 0) body.date = Date.now();
       const newSale = this.saleRepository.create(body);
       newSale.enterprise_id = req.user.enterprise_id;
       await this.saleRepository.save(newSale);
