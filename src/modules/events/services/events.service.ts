@@ -42,11 +42,12 @@ export class EventsService {
 
         if (counterIndex === -1 && increase) {
           // Create new counter if it doesn't exist
-          await this.counterRepository.save({
+          const newCounter = this.counterRepository.create({
             cage_id: cageId,
             category_id: categoryId,
             amount: quantity,
           });
+          await this.counterRepository.save(newCounter);
         } else {
           // Update existing counter
           cage.counters[counterIndex].amount += increase ? quantity : -quantity;
@@ -119,11 +120,12 @@ export class EventsService {
       );
       if (!cageCounter) {
         // create counter
-        await this.counterRepository.save({
+        const newCounter = this.counterRepository.create({
           cage_id: body.cage_id,
           category_id: body.category_id,
           amount: body.quantity,
         });
+        await this.counterRepository.save(newCounter);
       } else {
         cageCounter.amount += body.quantity;
         await this.cageRepository.save(cage);
