@@ -12,6 +12,7 @@ import { Counter } from './counters.entity';
 import { Breeding } from './breedings.entity';
 import { Purchase } from './purchases.entity';
 import { Sale } from './sales.entity';
+import { Fattens } from './fattens.entity';
 
 @Entity('Cages')
 export class Cage extends Audit {
@@ -51,4 +52,7 @@ export class Cage extends Audit {
 
   @OneToMany(() => Sale, (sale) => sale.cage)
   sales: Sale[];
+
+  @OneToMany(() => Fattens, (fattens) => fattens.destiny_cage)
+  fattens: Fattens[];
 }
