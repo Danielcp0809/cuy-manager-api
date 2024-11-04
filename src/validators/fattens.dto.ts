@@ -32,4 +32,10 @@ export class CreateFattenDto {
     description: 'Additional details or notes about the transfer',
   })
   description: string;
+
+  @IsNumber()
+  @ApiProperty({
+    description: 'The date when the fatten event was made in epoch format',
+  })
+  date: number;
 }
