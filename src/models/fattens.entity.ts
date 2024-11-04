@@ -7,9 +7,8 @@ import {
 } from 'typeorm';
 import { Category } from './categories.entity';
 import { Cage } from './cages.entity';
-
 @Entity('Fattens')
-export class Fattens {
+export class Fatten {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,6 +17,9 @@ export class Fattens {
 
   @Column({ type: 'varchar', length: 100, nullable: false })
   destiny_cage_id: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  enterprise_id: string;
 
   @Column({ type: 'int', nullable: false })
   quantity: number;
