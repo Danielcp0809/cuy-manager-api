@@ -10,6 +10,7 @@ import { Purchase } from 'src/models/purchases.entity';
 import { Sale } from 'src/models/sales.entity';
 import { Fatten } from 'src/models/fattens.entity';
 import { Dead } from 'src/models/deads.entity';
+import { Health } from 'src/models/healths.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Dead } from 'src/models/deads.entity';
       Counter,
       Fatten,
       Dead,
+      Health,
     ]),
     AuthModule,
   ],

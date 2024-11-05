@@ -10,12 +10,14 @@ import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
 import { Dead } from 'src/models/deads.entity';
 import { Fatten } from 'src/models/fattens.entity';
+import { Health } from 'src/models/healths.entity';
 import { Purchase } from 'src/models/purchases.entity';
 import { Sale } from 'src/models/sales.entity';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreateBreedingDto } from 'src/validators/breedings.dto';
 import { CreateDeadDto } from 'src/validators/deads.dto';
 import { CreateFattenDto } from 'src/validators/fattens.dto';
+import { CreateHealthDto } from 'src/validators/healths.dto';
 import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { CreateSaleDto } from 'src/validators/sales.dto';
 import { Repository } from 'typeorm';
@@ -37,6 +39,8 @@ export class EventsService {
     private fattenRepository: Repository<Fatten>,
     @InjectRepository(Dead)
     private deadRepository: Repository<Dead>,
+    @InjectRepository(Health)
+    private healthRepository: Repository<Health>,
   ) {}
 
   async createBreedingEvent(body: CreateBreedingDto, req: IRequest) {
@@ -301,6 +305,32 @@ export class EventsService {
       newDead.enterprise_id = req.user.enterprise_id;
       await this.deadRepository.save(newDead);
       return newDead;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async createHealthEvent(body: CreateHealthDto, req: IRequest) {
+    const cage = await this.cageRepository.findOne({
+      where: { id: body.cage_id },
+      relations: ['counters'],
+    });
+    if (!cage) throw new NotFoundException('Cage not found');
+    const cageCounter = cage.counters.find(
+      (counter) => counter.category_id === body.category_id,
+    );
+    if (!cageCounter) throw new NotFoundException('Counter not found');
+
+    if (cageCounter.amount < body.quantity)
+      throw new BadRequestException('Not enough animals in the cage');
+
+    try {
+      // create health event
+      if (!body.date || body.date === 0) body.date = Date.now();
+      const newHealth = this.healthRepository.create(body);
+      newHealth.enterprise_id = req.user.enterprise_id;
+      await this.healthRepository.save(newHealth);
+      return newHealth;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

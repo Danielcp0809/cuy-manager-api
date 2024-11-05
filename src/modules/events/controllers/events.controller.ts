@@ -16,6 +16,7 @@ import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { CreateSaleDto } from 'src/validators/sales.dto';
 import { CreateFattenDto } from 'src/validators/fattens.dto';
 import { CreateDeadDto } from 'src/validators/deads.dto';
+import { CreateHealthDto } from 'src/validators/healths.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Events')
@@ -62,5 +63,12 @@ export class EventsController {
   @HttpCode(HttpStatus.CREATED)
   createDeadEvent(@Body() body: CreateDeadDto, @Req() request: IRequest) {
     return this.eventsService.createDeadEvent(body, request);
+  }
+
+  @Post('/health')
+  @ApiOperation({ summary: 'Create a new health event' })
+  @HttpCode(HttpStatus.CREATED)
+  createHealthEvent(@Body() body: CreateHealthDto, @Req() request: IRequest) {
+    return this.eventsService.createHealthEvent(body, request);
   }
 }
