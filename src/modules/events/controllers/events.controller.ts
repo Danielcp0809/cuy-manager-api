@@ -15,6 +15,7 @@ import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { CreateSaleDto } from 'src/validators/sales.dto';
 import { CreateFattenDto } from 'src/validators/fattens.dto';
+import { CreateDeadDto } from 'src/validators/deads.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Events')
@@ -50,9 +51,16 @@ export class EventsController {
   }
 
   @Post('/fatten')
-  @ApiOperation({ summary: 'Create a new purchase event' })
+  @ApiOperation({ summary: 'Create a new fatten event' })
   @HttpCode(HttpStatus.CREATED)
   createFattenEvent(@Body() body: CreateFattenDto, @Req() request: IRequest) {
     return this.eventsService.createFattenEvent(body, request);
+  }
+
+  @Post('/dead')
+  @ApiOperation({ summary: 'Create a new dead event' })
+  @HttpCode(HttpStatus.CREATED)
+  createDeadEvent(@Body() body: CreateDeadDto, @Req() request: IRequest) {
+    return this.eventsService.createDeadEvent(body, request);
   }
 }

@@ -8,11 +8,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Breeding } from 'src/models/breedings.entity';
 import { Cage } from 'src/models/cages.entity';
 import { Counter } from 'src/models/counters.entity';
+import { Dead } from 'src/models/deads.entity';
 import { Fatten } from 'src/models/fattens.entity';
 import { Purchase } from 'src/models/purchases.entity';
 import { Sale } from 'src/models/sales.entity';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreateBreedingDto } from 'src/validators/breedings.dto';
+import { CreateDeadDto } from 'src/validators/deads.dto';
 import { CreateFattenDto } from 'src/validators/fattens.dto';
 import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { CreateSaleDto } from 'src/validators/sales.dto';
@@ -33,6 +35,8 @@ export class EventsService {
     private saleRepository: Repository<Sale>,
     @InjectRepository(Fatten)
     private fattenRepository: Repository<Fatten>,
+    @InjectRepository(Dead)
+    private deadRepository: Repository<Dead>,
   ) {}
 
   async createBreedingEvent(body: CreateBreedingDto, req: IRequest) {
@@ -267,6 +271,36 @@ export class EventsService {
       await this.fattenRepository.save(newFatten);
 
       return newFatten;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async createDeadEvent(body: CreateDeadDto, req: IRequest) {
+    // Update cage counters
+    const cage = await this.cageRepository.findOne({
+      where: { id: body.cage_id },
+      relations: ['counters'],
+    });
+    if (!cage) throw new NotFoundException('Cage not found');
+    const cageCounterIndex = cage.counters.findIndex(
+      (counter) => counter.category_id === body.category_id,
+    );
+    if (cageCounterIndex === -1)
+      throw new NotFoundException('Counter not found');
+
+    if (cage.counters[cageCounterIndex].amount < body.quantity)
+      throw new BadRequestException('Not enough animals in the cage');
+
+    try {
+      cage.counters[cageCounterIndex].amount -= body.quantity;
+      await this.cageRepository.save(cage);
+      // create dead event
+      if (!body.date || body.date === 0) body.date = Date.now();
+      const newDead = this.deadRepository.create(body);
+      newDead.enterprise_id = req.user.enterprise_id;
+      await this.deadRepository.save(newDead);
+      return newDead;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

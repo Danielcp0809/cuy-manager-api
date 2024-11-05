@@ -9,10 +9,19 @@ import { Counter } from 'src/models/counters.entity';
 import { Purchase } from 'src/models/purchases.entity';
 import { Sale } from 'src/models/sales.entity';
 import { Fatten } from 'src/models/fattens.entity';
+import { Dead } from 'src/models/deads.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Breeding, Purchase, Sale, Cage, Counter, Fatten]),
+    TypeOrmModule.forFeature([
+      Breeding,
+      Purchase,
+      Sale,
+      Cage,
+      Counter,
+      Fatten,
+      Dead,
+    ]),
     AuthModule,
   ],
   controllers: [EventsController],
