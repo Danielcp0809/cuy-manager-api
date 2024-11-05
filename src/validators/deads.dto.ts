@@ -29,6 +29,13 @@ export class CreateDeadDto {
   })
   description: string;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    description: 'The unit weight of the product in kilograms (Kg)',
+  })
+  unit_weight: number;
+
   @IsNumber()
   @ApiProperty({
     description: 'The date when the dead event was made in epoch format',
