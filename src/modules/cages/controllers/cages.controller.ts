@@ -51,6 +51,13 @@ export class CagesController {
     return this.cagesService.getAllCages(request);
   }
 
+  @Get('/options')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get cages options with counters and categories' })
+  getCagesOptions(@Req() request: IRequest) {
+    return this.cagesService.getAllCages(request, true);
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a cage by id' })

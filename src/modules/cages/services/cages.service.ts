@@ -9,7 +9,7 @@ import { isUUID } from 'class-validator';
 import { Cage } from 'src/models/cages.entity';
 import { IRequest } from 'src/modules/auth/interfaces/request.interface';
 import { CreateCageDto, UpdateCageDto } from 'src/validators/cages.dto';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class CagesService {
@@ -57,13 +57,29 @@ export class CagesService {
     }
   }
 
-  async getAllCages(req: IRequest) {
+  async getAllCages(req: IRequest, _returnCategories: boolean = false) {
     try {
-      return await this.cagesRepository.find({
+      const options: FindManyOptions<Cage> = {
         where: { enterprise_id: req.user.enterprise_id },
         order: { code: 'ASC' },
-        relations: ['counters'],
-      });
+        relations: _returnCategories
+          ? ['counters', 'counters.category']
+          : ['counters'],
+      };
+      if (_returnCategories) {
+        options.select = {
+          id: true,
+          code: true,
+          counters: {
+            amount: true,
+            category: {
+              id: true,
+              name: true,
+            },
+          },
+        };
+      }
+      return await this.cagesRepository.find(options);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
