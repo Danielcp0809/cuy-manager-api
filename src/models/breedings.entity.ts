@@ -35,10 +35,10 @@ export class Breeding extends Audit {
   @Column({ type: 'int', nullable: false })
   female_quantity: number;
 
-  @Column({ type: 'tinyint', width: 1, default: () => '0' })
-  continuous_breeding: boolean;
+  @Column({ type: 'int', nullable: true })
+  months_duration: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })

@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class CreateBreedingDto {
   @IsNotEmpty()
@@ -40,8 +34,9 @@ export class CreateBreedingDto {
   @IsNumber()
   female_quantity: number;
 
-  @IsBoolean()
-  continuous_breeding: boolean;
+  @IsNotEmpty()
+  @IsNumber()
+  months_duration: number;
 
   @IsNotEmpty()
   @IsString()
