@@ -38,7 +38,6 @@ export class CreateBreedingDto {
   @IsNumber()
   months_duration: number;
 
-  @IsNotEmpty()
   @IsString()
   description: string;
 
