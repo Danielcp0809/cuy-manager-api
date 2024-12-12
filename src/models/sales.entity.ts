@@ -35,6 +35,9 @@ export class Sale extends Audit {
   @Column({ type: 'bigint' })
   date: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  description: string;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
