@@ -49,6 +49,7 @@ export class EventsService {
     private healthRepository: Repository<Health>,
   ) {}
 
+  // BREEDINGS
   async createBreedingEvent(body: CreateBreedingDto, req: IRequest) {
     try {
       // Helper function to update cage counter
@@ -127,6 +128,82 @@ export class EventsService {
       newBreeding.enterprise_id = req.user.enterprise_id;
       await this.breedingRepository.save(newBreeding);
       return newBreeding;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async getBreedingEvents(filters: any, req: IRequest) {
+    const {
+      cageID,
+      maleCageID,
+      maleCategoryID,
+      femaleCageID,
+      femaleCategoryID,
+      minDate,
+      maxDate,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    } = filters;
+
+    const options: FindManyOptions<Breeding> = {
+      where: { enterprise_id: req.user.enterprise_id },
+      relations: [
+        'cage',
+        'male_cage',
+        'female_cage',
+        'male_category',
+        'female_category',
+      ],
+      select: {
+        cage: {
+          id: true,
+          code: true,
+        },
+        male_cage: {
+          id: true,
+          code: true,
+        },
+        male_category: {
+          id: true,
+          name: true,
+        },
+        female_cage: {
+          id: true,
+          code: true,
+        },
+        female_category: {
+          id: true,
+          name: true,
+        },
+        id: true,
+        male_quantity: true,
+        female_quantity: true,
+        months_duration: true,
+        description: true,
+        date: true,
+      },
+      order: { [sortBy]: sortOrder.toUpperCase() },
+      take: limit,
+      skip: (page - 1) * limit,
+    };
+    if (cageID) options.where['cage_id'] = cageID;
+    if (maleCageID) options.where['male_cage_id'] = maleCageID;
+    if (maleCategoryID) options.where['male_category_id'] = maleCategoryID;
+    if (femaleCageID) options.where['female_cage_id'] = femaleCageID;
+    if (femaleCategoryID)
+      options.where['female_category_id'] = femaleCategoryID;
+    if (minDate && maxDate) {
+      options.where['date'] = Between(minDate, maxDate);
+    } else if (minDate) {
+      options.where['date'] = MoreThanOrEqual(minDate);
+    } else if (maxDate) {
+      options.where['date'] = LessThanOrEqual(maxDate);
+    }
+    try {
+      return await this.breedingRepository.find(options);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

@@ -36,6 +36,41 @@ export class EventsController {
     return this.eventsService.createBreedingEvent(body, request);
   }
 
+  @Post('/breedings')
+  @ApiOperation({ summary: 'Get a list of breeding events' })
+  @HttpCode(HttpStatus.OK)
+  getBreedingEvents(
+    @Query('cage_id') cageID: string,
+    @Query('male_cage_id') maleCageID: string,
+    @Query('male_category_id') maleCategoryID: string,
+    @Query('female_cage_id') femaleCageID: string,
+    @Query('female_category_id') femaleCategoryID: string,
+    @Query('min_date') minDate: number,
+    @Query('max_date') maxDate: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Req() request: IRequest,
+  ) {
+    return this.eventsService.getBreedingEvents(
+      {
+        cageID,
+        maleCageID,
+        maleCategoryID,
+        femaleCageID,
+        femaleCategoryID,
+        minDate,
+        maxDate,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      },
+      request,
+    );
+  }
+
   @Post('/purchase')
   @ApiOperation({ summary: 'Create a new purchase event' })
   @HttpCode(HttpStatus.CREATED)
