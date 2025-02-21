@@ -382,6 +382,7 @@ export class EventsService {
     }
   }
 
+  // FATTENS
   async createFattenEvent(body: CreateFattenDto, req: IRequest) {
     // Obtener las jaulas de origen y destino
     const originCage = await this.cageRepository.findOne({
@@ -528,6 +529,7 @@ export class EventsService {
     }
   }
 
+  // DEADS
   async createDeadEvent(body: CreateDeadDto, req: IRequest) {
     // Update cage counters
     const cage = await this.cageRepository.findOne({
@@ -553,6 +555,57 @@ export class EventsService {
       newDead.enterprise_id = req.user.enterprise_id;
       await this.deadRepository.save(newDead);
       return newDead;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async getDeadEvents(filters: any, req: IRequest) {
+    const {
+      categoryID,
+      cageID,
+      quantity,
+      minDate,
+      maxDate,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    } = filters;
+    const options: FindManyOptions<Dead> = {
+      where: { enterprise_id: req.user.enterprise_id },
+      relations: ['category', 'cage'],
+      select: {
+        cage: {
+          id: true,
+          code: true,
+        },
+        category: {
+          id: true,
+          name: true,
+        },
+        id: true,
+        quantity: true,
+        description: true,
+        unit_weight: true,
+        date: true,
+      },
+      order: { [sortBy]: sortOrder.toUpperCase() },
+      take: limit,
+      skip: (page - 1) * limit,
+    };
+    if (categoryID) options.where['category_id'] = categoryID;
+    if (cageID) options.where['cage_id'] = cageID;
+    if (quantity) options.where['quantity'] = quantity;
+    if (minDate && maxDate) {
+      options.where['date'] = Between(minDate, maxDate);
+    } else if (minDate) {
+      options.where['date'] = MoreThanOrEqual(minDate);
+    } else if (maxDate) {
+      options.where['date'] = LessThanOrEqual(maxDate);
+    }
+    try {
+      return await this.deadRepository.find(options);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
