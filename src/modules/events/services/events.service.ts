@@ -470,6 +470,64 @@ export class EventsService {
     }
   }
 
+  async getFattenEvents(filters: any, req: IRequest) {
+    const {
+      categoryID,
+      originCageID,
+      destinyCageID,
+      quantity,
+      minDate,
+      maxDate,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    } = filters;
+    const options: FindManyOptions<Fatten> = {
+      where: { enterprise_id: req.user.enterprise_id },
+      relations: ['category', 'origin_cage', 'destiny_cage'],
+      select: {
+        origin_cage: {
+          id: true,
+          code: true,
+        },
+        destiny_cage: {
+          id: true,
+          code: true,
+        },
+        category: {
+          id: true,
+          name: true,
+        },
+        id: true,
+        quantity: true,
+        description: true,
+        date: true,
+      },
+      order: { [sortBy]: sortOrder.toUpperCase() },
+      take: limit,
+      skip: (page - 1) * limit,
+    };
+
+    if (categoryID) options.where['category_id'] = categoryID;
+    if (originCageID) options.where['origin_cage_id'] = originCageID;
+    if (destinyCageID) options.where['destiny_cage_id'] = destinyCageID;
+    if (quantity) options.where['quantity'] = quantity;
+    if (minDate && maxDate) {
+      options.where['date'] = Between(minDate, maxDate);
+    } else if (minDate) {
+      options.where['date'] = MoreThanOrEqual(minDate);
+    } else if (maxDate) {
+      options.where['date'] = LessThanOrEqual(maxDate);
+    }
+
+    try {
+      return await this.fattenRepository.find(options);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   async createDeadEvent(body: CreateDeadDto, req: IRequest) {
     // Update cage counters
     const cage = await this.cageRepository.findOne({
