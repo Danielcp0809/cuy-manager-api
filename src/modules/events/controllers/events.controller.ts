@@ -46,6 +46,37 @@ export class EventsController {
     return this.eventsService.createPurchaseEvent(body, request);
   }
 
+  @Post('/purchases')
+  @ApiOperation({ summary: 'Get a list of sale events' })
+  @HttpCode(HttpStatus.OK)
+  getPurchaseEvents(
+    @Query('category_id') categoryID: string,
+    @Query('cage_id') cageID: string,
+    @Query('quantity') quantity: number,
+    @Query('min_date') minDate: number,
+    @Query('max_date') maxDate: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Req() request: IRequest,
+  ) {
+    return this.eventsService.getPurchaseEvents(
+      {
+        categoryID,
+        cageID,
+        quantity,
+        minDate,
+        maxDate,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      },
+      request,
+    );
+  }
+
   @Post('/sale')
   @ApiOperation({ summary: 'Create a new purchase event' })
   @HttpCode(HttpStatus.CREATED)
