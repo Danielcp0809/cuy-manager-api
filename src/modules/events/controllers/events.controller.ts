@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -49,6 +51,37 @@ export class EventsController {
   @HttpCode(HttpStatus.CREATED)
   createSaleEvent(@Body() body: CreateSaleDto, @Req() request: IRequest) {
     return this.eventsService.createSaleEvent(body, request);
+  }
+
+  @Get('/sales')
+  @ApiOperation({ summary: 'Get a list of sale events' })
+  @HttpCode(HttpStatus.OK)
+  getSaleEvents(
+    @Query('category_id') categoryID: string,
+    @Query('cage_id') cageID: string,
+    @Query('quantity') quantity: number,
+    @Query('min_date') minDate: number,
+    @Query('max_date') maxDate: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Req() request: IRequest,
+  ) {
+    return this.eventsService.getSaleEvents(
+      {
+        categoryID,
+        cageID,
+        quantity,
+        minDate,
+        maxDate,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      },
+      request,
+    );
   }
 
   @Post('/fatten')

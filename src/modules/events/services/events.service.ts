@@ -20,7 +20,13 @@ import { CreateFattenDto } from 'src/validators/fattens.dto';
 import { CreateHealthDto } from 'src/validators/healths.dto';
 import { CreatePurchaseDto } from 'src/validators/purchases.dto';
 import { CreateSaleDto } from 'src/validators/sales.dto';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindManyOptions,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class EventsService {
@@ -187,6 +193,58 @@ export class EventsService {
       newSale.enterprise_id = req.user.enterprise_id;
       await this.saleRepository.save(newSale);
       return newSale;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async getSaleEvents(filters: any, req: IRequest) {
+    const {
+      categoryID,
+      cageID,
+      quantity,
+      minDate,
+      maxDate,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    } = filters;
+    const options: FindManyOptions<Sale> = {
+      where: { enterprise_id: req.user.enterprise_id },
+      relations: ['category', 'cage'],
+      select: {
+        cage: {
+          id: true,
+          code: true,
+        },
+        category: {
+          id: true,
+          name: true,
+        },
+        id: true,
+        quantity: true,
+        description: true,
+        unit_price: true,
+        unit_weight: true,
+        date: true,
+      },
+      order: { [sortBy]: sortOrder.toUpperCase() },
+      take: limit,
+      skip: (page - 1) * limit,
+    };
+    if (categoryID) options.where['category_id'] = categoryID;
+    if (cageID) options.where['cage_id'] = cageID;
+    if (quantity) options.where['quantity'] = quantity;
+    if (minDate && maxDate) {
+      options.where['date'] = Between(minDate, maxDate);
+    } else if (minDate) {
+      options.where['date'] = MoreThanOrEqual(minDate);
+    } else if (maxDate) {
+      options.where['date'] = LessThanOrEqual(maxDate);
+    }
+    try {
+      return await this.saleRepository.find(options);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
