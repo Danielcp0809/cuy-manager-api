@@ -234,4 +234,35 @@ export class EventsController {
   createHealthEvent(@Body() body: CreateHealthDto, @Req() request: IRequest) {
     return this.eventsService.createHealthEvent(body, request);
   }
+
+  @Post('/healths')
+  @ApiOperation({ summary: 'Get a list of health events' })
+  @HttpCode(HttpStatus.OK)
+  getHealthEvents(
+    @Query('category_id') categoryID: string,
+    @Query('cage_id') cageID: string,
+    @Query('quantity') quantity: number,
+    @Query('min_date') minDate: number,
+    @Query('max_date') maxDate: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'id',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'ASC',
+    @Req() request: IRequest,
+  ) {
+    return this.eventsService.getHealthEvents(
+      {
+        categoryID,
+        cageID,
+        quantity,
+        minDate,
+        maxDate,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      },
+      request,
+    );
+  }
 }
